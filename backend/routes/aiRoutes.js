@@ -1,9 +1,10 @@
 const express = require('express');
-const router = express.Router();
 const { analyzeProgress } = require('../controllers/aiController');
 const { protect } = require('../middleware/authMiddleware');
 
 // @route POST /api/ai/analyze
-router.post('/analyze', protect, analyzeProgress);
+
+const router = express.Router();
+router.post("/analyze", analyzeProgress);
 
 module.exports = router;

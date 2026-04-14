@@ -2,7 +2,7 @@ import { useState } from "react";
 import API from "./api";
 
 function App() {
-  const [data, setData] = useState("");
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleAnalyze = async () => {
@@ -11,16 +11,20 @@ function App() {
 
       const res = await API.post("/ai/analyze");
 
-      // ✅ safe response handling
-      if (res.data && res.data.aiResponse) {
-        setData(res.data.aiResponse);
-      } else {
+      const aiResponse = res.data?.aiResponse;
+
+      // ✅ Handle string OR object safely
+      if (!aiResponse) {
         setData("No response from AI");
+      } else if (typeof aiResponse === "string") {
+        setData(aiResponse);
+      } else {
+        setData(JSON.stringify(aiResponse, null, 2));
       }
+
     } catch (err) {
       console.error("FULL ERROR:", err);
 
-      // ✅ show real backend error
       const errorMsg =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -50,7 +54,10 @@ function App() {
       {data && (
         <div className="mt-6 p-4 bg-gray-800 rounded">
           <h2 className="text-xl mb-2">AI Insights</h2>
-          <pre className="whitespace-pre-wrap">{data}</pre>
+
+          <pre className="whitespace-pre-wrap text-green-300">
+            {data}
+          </pre>
         </div>
       )}
     </div>

@@ -9,7 +9,7 @@ function App() {
     try {
       setLoading(true);
 
-      const res = await API.post("/ai/analyze");
+      const res = await API.post("/ai/analyze", {}, { timeout: 30000 });
 
       const aiResponse = res.data?.aiResponse;
 
